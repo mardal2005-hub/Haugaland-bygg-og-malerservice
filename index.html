@@ -215,6 +215,16 @@
   .facts .ft{background:#fff;padding:20px 22px}
   .facts .ft b{font-family:var(--ff-disp);font-size:1.24rem;font-weight:500;display:block}
   .facts .ft span{font-family:var(--ff-mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2)}
+  /* «stige»-animasjon: verdiene glir oppover og tones inn, forskjøvet per rute */
+  .facts .ft b,.facts .ft span{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .7s cubic-bezier(.2,.75,.25,1)}
+  .facts.rise .ft b,.facts.rise .ft span{opacity:1;transform:none}
+  .facts.rise .ft:nth-child(1) b{transition-delay:.02s}  .facts.rise .ft:nth-child(1) span{transition-delay:.10s}
+  .facts.rise .ft:nth-child(2) b{transition-delay:.12s}  .facts.rise .ft:nth-child(2) span{transition-delay:.20s}
+  .facts.rise .ft:nth-child(3) b{transition-delay:.22s}  .facts.rise .ft:nth-child(3) span{transition-delay:.30s}
+  .facts.rise .ft:nth-child(4) b{transition-delay:.32s}  .facts.rise .ft:nth-child(4) span{transition-delay:.40s}
+  @media (prefers-reduced-motion: reduce){
+    .facts .ft b,.facts .ft span{opacity:1;transform:none;transition:none}
+  }
   .fag{margin-top:32px}
   .fag .lbl{font-family:var(--ff-mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);margin-bottom:14px}
   .chips{display:flex;flex-wrap:wrap;gap:9px}
@@ -680,6 +690,15 @@
     entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
   }, {threshold:0.14});
   document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+  // «Stige»-animasjon på fakta-rutene
+  var facts = document.querySelector('.facts');
+  if(facts){
+    var fio = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('rise'); fio.unobserve(e.target); } });
+    }, {threshold:0.35});
+    fio.observe(facts);
+  }
 
   var cf = document.getElementById('cf');
   cf.addEventListener('submit', function(e){ e.preventDefault(); cf.style.display='none'; document.getElementById('fok').classList.add('show'); });
